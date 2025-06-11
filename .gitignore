@@ -8,3 +8,8 @@ sota/ExquisiteNetV2/cifar-10-batches-py
 *.bmp
 build/
 tests/*/outputs
+0/
+first_test/
+geminikey.sh
+uv.lock
+.venv/

@@ -2,12 +2,14 @@ import os
 import numpy as np
 import torch
 
-ROOT_DIR = "/home/hice1/jzutty3/llm-guided-evolution"
+ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
 # DATA_PATH absolute or relative to ExquisiteNetV2
 DATA_PATH = "./cifar10"
 SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/ExquisiteNetV2')
 SEED_NETWORK = os.path.join(SOTA_ROOT, "network.py")
-LOCAL = True
+MODEL = "network"
+TRAIN_FILE = os.path.join(SOTA_ROOT, "train.py")
+LOCAL = False
 if LOCAL:
 	RUN_COMMAND = 'bash'
 	DELAYED_CHECK = False
@@ -46,7 +48,7 @@ GENERATION = 0
 PROB_QC = 0.0
 PROB_EOT = 0.25
 num_generations = 30  # Number of generations
-start_population_size = 32
+start_population_size = 8
 # start_population_size = 144   # Size of the population 124=72
 #population_size = 44 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
 population_size = 8 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
@@ -61,12 +63,13 @@ Job Sub Constants/Params
 """
 QC_CHECK_BOOL = False
 INFERENCE_SUBMISSION = True
+HUGGING_FACE_BOOL = False
 #LLM_GPU = 'NVIDIAA100-SXM4-80GB|NVIDIAA10080GBPCIe|TeslaV100-PCIE-32GB|QuadroRTX4000|GeForceGTX1080Ti|GeForceGTX1080|TeslaV100-PCIE-32GB|TeslaV100S-PCIE-32GB'
 #LLM_GPU = 'NVIDIAA100-SXM4-80GB|NVIDIAA10080GBPCIe|TeslaV100-PCIE-32GB|TeslaV100S-PCIE-32GB|NVIDIARTX6000AdaGeneration|NVIDIARTXA6000|NVIDIARTXA5000|NVIDIARTXA4000|GeForceGTX1080Ti|QuadroRTX4000|QuadroP4000|GeForceGTX1080|TeslaP4'
 LLM_GPU = 'A100-40GB|A100-80GB|H100|V100-16GB|V100-32GB|RTX6000|A40|L40S'
 PYTHON_BASH_SCRIPT_TEMPLATE = """#!/bin/bash
 #SBATCH --job-name=evaluateGene
-#SBATCH -t 8:00:00
+#SBATCH -t 4:00:00
 #SBATCH --gres=gpu:1
 #SBATCH -C "A100-40GB|A100-80GB|H100|V100-16GB|V100-32GB|RTX6000|A40|L40S"
 #SBATCH --mem-per-gpu 16G
@@ -78,10 +81,10 @@ hostname
 # Load GCC version 9.2.0
 # module load gcc/13.2.0
 module load cuda
-module load anaconda3
 # Activate Conda environment
-conda activate llm_guided_env
-export LD_LIBRARY_PATH=~/.conda/envs/llm_guided_env/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH
+# conda activate llm_guided_env
+# export LD_LIBRARY_PATH=~/.conda/envs/llm_guided_env/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH
+source activate .venv/bin/activate
 # conda info
 
 # Set the TOKENIZERS_PARALLELISM environment variable if needed
@@ -106,10 +109,10 @@ hostname
 # module load gcc/13.2.0
 # module load cuda/11.8
 module load cuda
-module load anaconda3
 # Activate Conda environment
-conda activate llm_guided_env
-export LD_LIBRARY_PATH=~/.conda/envs/llm_guided_env/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH
+# conda activate llm_guided_env
+# export LD_LIBRARY_PATH=~/.conda/envs/llm_guided_env/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH
+source activate .venv/bin/activate
 # conda info
 
 # Set the TOKENIZERS_PARALLELISM environment variable if needed
