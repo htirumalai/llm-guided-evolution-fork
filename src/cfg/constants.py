@@ -2,6 +2,17 @@ import os
 import numpy as np
 import torch
 
+# Pointnet++ Implementation
+ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
+# DATA_PATH absolute or relative to Pointnet++
+DATA_PATH = "/storage/ice-shared/vip-vvk/data/llm_ge_data/modelnet40_normal_resampled"
+SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/Pointnet_Pointnet2_pytorch')
+SEED_NETWORK = os.path.join(SOTA_ROOT, "models/pointnet2_cls_ssg.py")
+MODEL = "pointnet2_cls_ssg"
+TRAIN_FILE = os.path.join(SOTA_ROOT, 'train_classification.py')
+
+'''
+# ExquisiteNetV2 Implementation
 ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
 # DATA_PATH absolute or relative to ExquisiteNetV2
 DATA_PATH = "./cifar10"
@@ -9,6 +20,8 @@ SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/ExquisiteNetV2')
 SEED_NETWORK = os.path.join(SOTA_ROOT, "network.py")
 MODEL = "network"
 TRAIN_FILE = os.path.join(SOTA_ROOT, "train.py")
+'''
+
 LOCAL = False
 if LOCAL:
 	RUN_COMMAND = 'bash'
@@ -44,11 +57,11 @@ INVALID_FITNESS_MAX = tuple([float(x*np.inf*-1) for x in FITNESS_WEIGHTS])
 PLACEHOLDER_FITNESS = tuple([int(x*9999999999*-1) for x in FITNESS_WEIGHTS])
 
 NUM_EOT_ELITES = 10
-GENERATION = 0
+GENERATION = 1
 PROB_QC = 0.0
 PROB_EOT = 0.25
-num_generations = 30  # Number of generations
-start_population_size = 8
+num_generations = 1  # Number of generations
+start_population_size = 16
 # start_population_size = 144   # Size of the population 124=72
 #population_size = 44 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
 population_size = 8 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
@@ -69,7 +82,7 @@ HUGGING_FACE_BOOL = False
 LLM_GPU = 'A100-40GB|A100-80GB|H100|V100-16GB|V100-32GB|RTX6000|A40|L40S'
 PYTHON_BASH_SCRIPT_TEMPLATE = """#!/bin/bash
 #SBATCH --job-name=evaluateGene
-#SBATCH -t 4:00:00
+#SBATCH -t 8:00:00
 #SBATCH --gres=gpu:1
 #SBATCH -C "A100-40GB|A100-80GB|H100|V100-16GB|V100-32GB|RTX6000|A40|L40S"
 #SBATCH --mem-per-gpu 16G

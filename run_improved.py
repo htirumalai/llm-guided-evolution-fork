@@ -303,12 +303,12 @@ def create_individual(container, temp_min=0.05, temp_max=0.4):
 def submit_run(gene_id):
     def write_bash_script_py(gene_id, train_file=f'{TRAIN_FILE}'):
         if not MACOS:
-            tmp = f"-data {DATA_PATH} -end_lr 0.001 -seed 21 -val_r 0.2 -amp -epoch 2"
+            tmp = f"--data {DATA_PATH} --end_lr 0.001 --seed 21 --val_r 0.2 --amp --epoch 2"
         else:
             tmp = f"-data {DATA_PATH} -end_lr 0.001 -seed 21 -val_r 0.2 -epoch 2"
 
-        python_runline = f'python {train_file} -bs 216 -network "models.llmge_models.network_{gene_id}" {tmp}'
-        # python_runline = ('PYTHONPATH=/home/hice1/htirumalai3/scratch/llm-guided-evolution/sota/Pointnet_Pointnet2_pytorch/models/llmge_models:$PYTHONPATH 'f'python {train_file} --batch_size 216 --model "pointnet2_cls_ssg_{gene_id}" {tmp}')
+        # python_runline = f'python {train_file} -bs 216 -network "models.llmge_models.network_{gene_id}" {tmp}'
+        python_runline = (f'PYTHONPATH={SOTA_ROOT}/models/llmge_models:$PYTHONPATH 'f'python {train_file} --batch_size 216 --model "pointnet2_cls_ssg_{gene_id}" {tmp}')
 
         bash_script_content = PYTHON_BASH_SCRIPT_TEMPLATE.format(python_runline)
         return bash_script_content

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=llm_opt
-#SBATCH -t 4:00:00              		# Runtime in D-HH:MM
+#SBATCH -t 8:00:00              		# Runtime in D-HH:MM
 #SBATCH --mem-per-gpu 16G
 #SBATCH -n 1                          # number of CPU cores
 #SBATCH -N 1
@@ -14,9 +14,9 @@ module load cuda
 
 export CUDA_VISIBLE_DEVICES=0
 
-# For this line create a file called geminikey.sh and in that file write 'export GEMINI_API_KEY="your-api-key-here"'
+# For this line create a file called geminikey.sh and in that file write 'export GEMINI_API_KEY="your-api-key-here(leave the double quotes, remove the single quotes)"'
 source geminikey.sh
 
 source .venv/bin/activate
 
-python run_improved.py first_test
+python run_improved.py second_test

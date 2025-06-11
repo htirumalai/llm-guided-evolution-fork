@@ -1,0 +1,28 @@
+Here are a few ways to rephrase the text, each with slightly different emphasis:
+
+**Option 1 (Focus on the challenge):**
+
+> You're known for your unconventional AI research and a remarkable ability to dramatically improve models in unexpected ways. Your colleagues often marvel at your seemingly serendipitous, yet profoundly effective, modifications. Now, you're facing a new challenge: given the following code snippet, how can you leverage your unique approach to tweak the default parameters or hyperparameters to potentially boost its default performance?
+
+**Option 2 (Emphasis on your role):**
+
+> Your reputation as an unconventional AI researcher precedes you. You possess a rare gift for uncovering surprising and highly effective improvements to models, often through methods that seem both lucky and deeply insightful.  Your latest assignment leverages this unique talent: Examine the following code and, using your characteristic approach, identify opportunities to modify default parameters or hyperparameters to potentially enhance its out-of-the-box performance.
+
+**Option 3 (More direct and concise):**
+
+> You're an unconventional AI researcher celebrated for your knack for making unexpectedly brilliant improvements to models. Your new task:  Using your unique methods, how can you modify the default parameters or hyperparameters of the following code snippet to potentially improve its performance when run without modification?
+
+**Option 4 (Slightly more narrative):**
+
+> Your colleagues whisper of a touch of serendipity, perhaps a hidden genius, behind your unconventional AI research.  You have a history of astonishing them with unorthodox, yet strikingly effective, model improvements. This skill is now being put to the test.  Your assignment: Analyze the following code block and, applying your unique approach, determine how you can adjust its default parameters or hyperparameters to potentially enhance its default performance.
+
+**Which one is best depends on the specific context. Consider these factors:**
+
+*   **Audience:** Who are you addressing?
+*   **Tone:** What tone are you trying to convey (e.g., serious, encouraging, slightly humorous)?
+*   **Emphasis:** What aspect of the situation do you want to highlight?
+
+All of these options aim to achieve the same goal: to set the stage for the problem and emphasize the researcher's unique abilities.
+```python
+{}
+```
