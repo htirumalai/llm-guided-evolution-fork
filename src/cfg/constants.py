@@ -61,7 +61,7 @@ GENERATION = 1
 PROB_QC = 0.0
 PROB_EOT = 0.25
 num_generations = 1  # Number of generations
-start_population_size = 16
+start_population_size = 32
 # start_population_size = 144   # Size of the population 124=72
 #population_size = 44 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
 population_size = 8 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover

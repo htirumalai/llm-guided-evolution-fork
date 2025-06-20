@@ -19,4 +19,4 @@ source geminikey.sh
 
 source .venv/bin/activate
 
-python run_improved.py second_test
+python run_improved.py pointnet_test

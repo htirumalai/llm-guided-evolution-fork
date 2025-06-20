@@ -21,6 +21,9 @@ from pathlib import Path
 from tqdm import tqdm
 from data_utils.ModelNetDataLoader import ModelNetDataLoader
 
+torch.manual_seed(42)
+np.random.seed(42)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
 sys.path.append(os.path.join(ROOT_DIR, 'models'))
@@ -57,6 +60,7 @@ def parse_args():
     parser.add_argument('--seed', type=int, help='random seed for reproducibility')
     parser.add_argument('--val_r', type=float, default=0.2, help='validation ratio')
     parser.add_argument('--amp', action='store_true', help='use automatic mixed precision')
+    parser.add_argument('--patience', type=int, default=25, help='early stopping patience (number of epochs)')
     return parser.parse_args()
 
 
@@ -96,22 +100,9 @@ def test(model, loader, num_class=40):
 
 
 def main(args):
-    # ADDED FOR LLM
-    '''
-    #os.chdir('./sota/Pointnet_Pointnet2_pytorch')
-    args = parse_args()
-    
-    # Import the module dynamically
-    pointnet2_cls_ssg_module = importlib.import_module(args.models)
-    # Now you can use `pointnet2_cls_ssg_module` to access the contents of `pointnet2_cls_ssg`
-    Pointnet_Pointnet2_pytorch = getattr(pointnet2_cls_ssg_module, 'Pointnet_Pointnet2_pytorch')
-    get_optimizer = getattr(pointnet2_cls_ssg_module, 'get_optimizer')
-    # this will get the gene id value 
-    '''
     args = parse_args()
 
     gene_id = args.model.split('pointnet2_cls_ssg_')[1]
-    
     
     def log_string(str):
         logger.info(str)
@@ -137,7 +128,6 @@ def main(args):
     log_dir.mkdir(exist_ok=True)
 
     '''LOG'''
-    args = parse_args()
     logger = logging.getLogger("Model")
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -172,7 +162,6 @@ def main(args):
         classifier = classifier.to(torch.device(device))
         criterion = criterion.to(torch.device(device))
 
-
     try:
         checkpoint = torch.load(str(exp_dir) + '/checkpoints/best_model.pth')
         start_epoch = checkpoint['epoch']
@@ -194,20 +183,26 @@ def main(args):
         optimizer = torch.optim.SGD(classifier.parameters(), lr=0.01, momentum=0.9)
 
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
+
+    '''TRAINING'''
     global_epoch = 0
     global_step = 0
     best_instance_acc = 0.0
     best_class_acc = 0.0
 
-    '''TRANING'''
+    early_stopping_counter = 0
+    patience = args.patience
+
     logger.info('Start training...')
     tr_start = time.time()
+
     for epoch in range(start_epoch, args.epoch):
         log_string('Epoch %d (%d/%s):' % (global_epoch + 1, epoch + 1, args.epoch))
         mean_correct = []
         classifier = classifier.train()
 
         scheduler.step()
+
         for batch_id, (points, target) in tqdm(enumerate(trainDataLoader, 0), total=len(trainDataLoader), smoothing=0.9):
             optimizer.zero_grad()
 
@@ -219,7 +214,7 @@ def main(args):
             points = points.transpose(2, 1)
 
             if not args.use_cpu:
-                   points, target = points.to(torch.device(device)), target.to(torch.device(device))
+                points, target = points.to(torch.device(device)), target.to(torch.device(device))
 
             pred, trans_feat = classifier(points)
             loss = criterion(pred, target.long(), trans_feat)
@@ -227,6 +222,7 @@ def main(args):
 
             correct = pred_choice.eq(target.long().data).cpu().sum()
             mean_correct.append(correct.item() / float(points.size()[0]))
+
             loss.backward()
             optimizer.step()
             global_step += 1
@@ -234,19 +230,23 @@ def main(args):
         train_instance_acc = np.mean(mean_correct)
         log_string('Train Instance Accuracy: %f' % train_instance_acc)
 
+        '''TESTING'''
         with torch.no_grad():
             instance_acc, class_acc = test(classifier.eval(), testDataLoader, num_class=num_class)
 
-            if (instance_acc >= best_instance_acc):
+            improved = False
+            if instance_acc >= best_instance_acc:
                 best_instance_acc = instance_acc
                 best_epoch = epoch + 1
+                improved = True
 
-            if (class_acc >= best_class_acc):
+            if class_acc >= best_class_acc:
                 best_class_acc = class_acc
+
             log_string('Test Instance Accuracy: %f, Class Accuracy: %f' % (instance_acc, class_acc))
             log_string('Best Instance Accuracy: %f, Class Accuracy: %f' % (best_instance_acc, best_class_acc))
 
-            if (instance_acc >= best_instance_acc):
+            if improved:
                 logger.info('Save model...')
                 savepath = str(checkpoints_dir) + '/best_model.pth'
                 log_string('Saving at %s' % savepath)
@@ -258,24 +258,35 @@ def main(args):
                     'optimizer_state_dict': optimizer.state_dict(),
                 }
                 torch.save(state, savepath)
-            global_epoch += 1
+                early_stopping_counter = 0
+            else:
+                early_stopping_counter += 1
+                log_string(f'Early stopping counter: {early_stopping_counter}/{patience}')
+
+            # Early stopping condition
+            if early_stopping_counter >= patience:
+                log_string(f'Early stopping triggered at epoch {epoch + 1}')
+                break
+
+        global_epoch += 1
 
     logger.info('End of training...')
     tr_time = time.time() - tr_start
 
     total_params = sum(p.numel() for p in classifier.parameters())
-    results_text = f"{best_instance_acc},{total_params},{class_acc},{tr_time}"
+    results_text = f"{best_instance_acc},{total_params},{best_class_acc},{tr_time}"
 
     filename = f'sota/Pointnet_Pointnet2_pytorch/results/{gene_id}_results.txt'
-
     dir_path = os.path.dirname(filename)
-    # Create the directory, ignore error if it already exists
     os.makedirs(dir_path, exist_ok=True)
-    # Open the file in write mode and write the text
+
     with open(filename, 'w') as file:
         file.write(results_text)
+
     print(f"results have been written to {filename}")
-    print('='*120);print('job done');print('='*120)
+    print('=' * 120)
+    print('job done')
+    print('=' * 120)
 
 
 if __name__ == '__main__':
