@@ -39,13 +39,13 @@ else:  # Non-Mac systems (Linux, Windows)
 def parse_args():
     '''PARAMETERS'''
     parser = argparse.ArgumentParser('training')
-    parser.add_argument('--use_cpu', action='store_true', default=False, help='use cpu mode') # - may not need this but will check with Dr. Zutty
-    parser.add_argument('--gpu', type=str, default='0', help='specify gpu device') # - may not need this but will check with Dr. Zutty
+    parser.add_argument('--use_cpu', action='store_true', default=False, help='use cpu mode')
+    parser.add_argument('--gpu', type=str, default='0', help='specify gpu device')
     parser.add_argument('--batch_size', type=int, default=24, help='batch size in training')
     # parser.add_argument('--model', default='pointnet_cls', help='model name [default: pointnet_cls]') - changed so that default would be pointnet2_cls_ssg to be work in conjunction with the llm
     parser.add_argument('--model', default='pointnet2_cls_ssg', help='model name [default: pointnet2_cls_ssg]')
     parser.add_argument('--num_category', default=40, type=int, choices=[10, 40],  help='training on ModelNet10/40')
-    parser.add_argument('--epoch', default=200, type=int, help='number of epoch in training') # was 200, shortened it to check if it works
+    parser.add_argument('--epoch', default=200, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
     parser.add_argument('--num_point', type=int, default=1024, help='Point Number')
     parser.add_argument('--optimizer', type=str, default='Adam', help='optimizer for training')
@@ -55,10 +55,6 @@ def parse_args():
     parser.add_argument('--process_data', action='store_true', default=False, help='save data offline')
     parser.add_argument('--use_uniform_sample', action='store_true', default=False, help='use uniform sampiling')
     # -- Additional parser statements - will check to see if they are appropriate, added them from train.py
-    parser.add_argument('--data', type=str, help='path to dataset')
-    parser.add_argument('--end_lr', type=float, default=0.01, help="stop training when the lr less than end_lr")
-    parser.add_argument('--seed', type=int, help='random seed for reproducibility')
-    parser.add_argument('--val_r', type=float, default=0.2, help='validation ratio')
     parser.add_argument('--amp', action='store_true', help='use automatic mixed precision')
     parser.add_argument('--patience', type=int, default=25, help='early stopping patience (number of epochs)')
     return parser.parse_args()
@@ -273,7 +269,7 @@ def main(args):
     logger.info('End of training...')
     tr_time = time.time() - tr_start
 
-    total_params = sum(p.numel() for p in classifier.parameters())
+    total_params = sum(p.numel() for p in classifier.parameters() if p.requires_grad)
     results_text = f"{best_instance_acc},{total_params},{best_class_acc},{tr_time}"
 
     filename = f'sota/Pointnet_Pointnet2_pytorch/results/{gene_id}_results.txt'

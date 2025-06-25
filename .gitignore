@@ -1,4 +1,4 @@
-#LLMGE Generated
+# LLMGE Generated
 xXx*
 network_xXx*
 *.bmp
@@ -7,26 +7,28 @@ slurm-*.out
 1/
 first_test/
 second_test/
-third/test/
+pointnet_test/
 tests/*/outputs
 results/
-sota/Pointnet_Pointnet2_pytorch/old_results/
-sota/Pointnet_Pointnet2_pytorch/models/old_llmge_models/
 weight/
 sota/Pointnet_Pointnet2_pytorch/models/llmge_models/
 
-#Conda Env
+# Conda Env
 geminikey.sh
 uv.lock
 .venv/
 
-#Datasets
+# Datasets
 sota/ExquisiteNetV2/cifar-10-batches-py
 data/modelnet40_normal_resampled/
 sota/ExquisiteNetV2/cifar10/
 
-#Miscellaneous
-change.txt
+# Graphs
+llmge_graph.py
+plot.png
+
+# Miscellaneous
+todo.txt
 __pycache__/
 build/
 Miniconda3-latest-MacOSX-arm64.sh
@@ -34,4 +36,4 @@ sota/Pointnet_Pointnet2_pytorch/log/classification/*
 !sota/Pointnet_Pointnet2_pytorch/log/classification/pointnet2_cls_ssg
 !sota/Pointnet_Pointnet2_pytorch/log/classification/pointnet2_msg_normals
 !sota/Pointnet_Pointnet2_pytorch/log/classification/pointnet2_ssg_wo_normals
-z-second-test-slurms/
+z-pointnet-test-slurms/

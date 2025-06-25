@@ -1,22 +1,13 @@
-Here are several ways to ask about improving code performance by adjusting default parameters or hyperparameters, ranging from brief to detailed, and emphasizing different aspects of the question:
+This document provides several alternative ways to ask the question "How can I improve the performance of this code by tweaking its parameters or hyperparameters?". It offers a range of options, from formal and technical to informal and direct, each designed to elicit different kinds of answers. The variations focus on identifying *unconventional* or *less commonly explored* modifications.
 
-**Short & Sweet:**
+Here's a summary of the key categories of rephrased questions:
 
-* How can we tune the parameters or hyperparameters to improve this code's performance?
-* What parameter/hyperparameter changes could improve this code?
-* What parameter/hyperparameter tweaks could optimize this code?
+*   **Formal/Technical:** Emphasizes precise language and assumes a knowledgeable audience.
+*   **Informal/Direct:** Uses simpler language and encourages creative, potentially unconventional, suggestions.
+*   **Specificity-Focused:** Seeks detailed and justified recommendations for specific modifications.
+*   **General/Concise:** Provides a broad inquiry for general ideas about unusual modifications.
 
-**More In-Depth:**
-
-* What specific parameter or hyperparameter changes are most likely to enhance the performance of this code?
-* What parameter and/or hyperparameter adjustments would be most effective in optimizing this code's performance (e.g., speed, accuracy, resource usage)?
-* To improve this code's performance, which parameters or hyperparameters should we adjust from their defaults, and what is the rationale behind those adjustments?
-
-**Focusing on Specific Improvements:**
-
-* How can we modify the parameters or hyperparameters to specifically improve the [speed/accuracy/efficiency/etc.] of this code?
-
-The most appropriate wording will depend on the context and your desired level of detail.
+The document concludes by highlighting factors to consider when choosing the best phrasing: the audience's technical understanding, the desired level of detail in the response, and the question's overall objective.  The goal is to select a question that effectively communicates the need for non-standard approaches to parameter/hyperparameter tuning for performance optimization.
 ```python
 {}
 ```
