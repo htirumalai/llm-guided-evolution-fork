@@ -4,9 +4,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 from time import time
 import numpy as np
-# from pointnet2_utils import PointNetSetAbstraction
 
 #--OPTION--
+
+# -- NOTE --
+# Current Implementation: Squared Euclidean distance for spatial neighborhood queries
+# Replace this function with Manhattan, Cosine, Minkowski, Chebyshev, Angular distance, or any other different calculation that follows the docstring's input/output format
+# Keep method name the same as it is called elsewhere in the code
+# -- NOTE --
 
 def square_distance(src, dst):
     """
@@ -33,6 +38,12 @@ def square_distance(src, dst):
 
 #--OPTION--
 
+# -- NOTE --
+# Current Implementation: Standard tensor indexing for point selection using batch indices
+# Try implementing Interpolated Indexing, Caching Indexing, Sparse Indexing, Multi-scale Indexing, Randomized Indexing, Learned Indexing, or any other different calculation that follows the docstring's input/output format
+# Keep method name the same as it is called elsewhere in the code
+# -- NOTE --
+
 def index_points(points, idx):
     """
 
@@ -53,6 +64,12 @@ def index_points(points, idx):
     return new_points
 
 # --OPTION--
+
+# -- NOTE --
+# Current: Farthest Point Sampling (FPS) - iteratively selects most distant points
+# Try implementing Random Sampling, Grid Sampling, Density-based Sampling, Normal-based Sampling, Feature-based Sampling, Hybrid Sampling, Weighted FPS, Hierarchical Sampling, Centroidal Voronoi, Poisson Disk Sampling, or any other different calculation that follows the docstring's input/output format
+# Keep method name the same as it is called elsewhere in the code
+# -- NOTE --
 
 def farthest_point_sample(xyz, npoint):
     """
@@ -79,6 +96,11 @@ def farthest_point_sample(xyz, npoint):
 
 # --OPTION--
 
+# -- NOTE --
+# The method square distance used in this architecture is pre-existing and fully implemented elsewhere.
+# It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# -- NOTE --
+
 def query_ball_point(radius, nsample, xyz, new_xyz):
     """
     Input:
@@ -102,6 +124,11 @@ def query_ball_point(radius, nsample, xyz, new_xyz):
     return group_idx
 
 # --OPTION--
+
+# -- NOTE --
+# Note: The methods farthest_point_sample, index_points, and query_ball_point used in this architecture are pre-existing and fully implemented elsewhere. 
+# It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# -- NOTE --
 
 def sample_and_group(npoint, radius, nsample, xyz, points, returnfps=False):
     """
@@ -155,6 +182,10 @@ def sample_and_group_all(xyz, points):
     return new_xyz, new_points
 
 # --OPTION--
+# -- NOTE --
+# Note: The methods sample_and_group_all and sample_and_group used in this architecture are pre-existing and fully implemented elsewhere. 
+# It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# -- NOTE --
 
 class PointNetSetAbstraction(nn.Module):
     def __init__(self, npoint, radius, nsample, in_channel, mlp, group_all):
@@ -200,6 +231,10 @@ class PointNetSetAbstraction(nn.Module):
         return new_xyz, new_points
 
 # --OPTION--
+# -- NOTE --
+# Note: The class PointNetSetAbstraction used in this architecture is pre-existing and fully implemented elsewhere. 
+# It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# -- NOTE --
 
 class GetModel(nn.Module):
     def __init__(self,num_class,normal_channel=True):

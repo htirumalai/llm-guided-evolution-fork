@@ -303,12 +303,12 @@ def create_individual(container, temp_min=0.05, temp_max=0.4):
 def submit_run(gene_id):
     def write_bash_script_py(gene_id, train_file=f'{TRAIN_FILE}'):
         if not MACOS:
-            tmp = f"--data {DATA_PATH} --end_lr 0.001 --seed 21 --val_r 0.2 --amp --epoch 200"
+            tmp = RUNLINE_TMP
         else:
-            tmp = f"-data {DATA_PATH} -end_lr 0.001 -seed 21 -val_r 0.2 -epoch 200"
+            tmp = RUNLINE_TMP
 
         # python_runline = f'python {train_file} -bs 216 -network "models.llmge_models.network_{gene_id}" {tmp}'
-        python_runline = (f'PYTHONPATH={SOTA_ROOT}/models/llmge_models:$PYTHONPATH 'f'python {train_file} --batch_size 216 --model "pointnet2_cls_ssg_{gene_id}" {tmp}')
+        python_runline = (f'PYTHONPATH={SOTA_ROOT}/models/llmge_models:$PYTHONPATH 'f'python {train_file} --model "pointnet2_cls_ssg_{gene_id}" --log_dir "pointnet2_cls_ssg_{gene_id}" {tmp}')
 
         bash_script_content = PYTHON_BASH_SCRIPT_TEMPLATE.format(python_runline)
         return bash_script_content
@@ -415,7 +415,7 @@ def check4results(gene_id):
         pass
         
 
-def check_and_update_fitness(population, timeout=10000, loop_delay=60*5):
+def check_and_update_fitness(population, timeout=18000, loop_delay=60*5):
     # original timeout was 3600*30
     # original loop_delay = 60*30
     """ This function submits jobs and then if submitted it checks for four possibilities.
@@ -467,7 +467,14 @@ def check_and_update_fitness(population, timeout=10000, loop_delay=60*5):
                     fitness_tuple = GLOBAL_DATA[gene_id]['fitness']  # Implement this function
                     ind.fitness.values = fitness_tuple
                 elif time.time() - GLOBAL_DATA[gene_id]['start_time'] > timeout:
-                    print(f"Timeout for gene ID {gene_id}")
+                    print(f"Timeout for gene ID {gene_id}, terminating job")
+                    job_id = GLOBAL_DATA[gene_id].get("results_job", None)
+                    if job_id and job_id != "None":
+                        try:
+                            subprocess.run(["scancel", str(job_id)], check=True)
+                            print(f"\t⛔️ Killed SLURM job {job_id} for gene ID {gene_id}")
+                        except subprocess.CalledProcessError as e:
+                            print(f"\t⚠️ Failed to cancel SLURM job {job_id}: {e}") 
                     ind.fitness.values = INVALID_FITNESS_MAX 
                     GLOBAL_DATA[gene_id]['status'] = 'FAILED: TIMEOUT'
                 else:

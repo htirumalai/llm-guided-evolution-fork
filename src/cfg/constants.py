@@ -2,6 +2,17 @@ import os
 import numpy as np
 import torch
 
+MACOS = False
+RUNLINE_AMP = ''
+if torch.mps.is_available():
+	DEVICE = 'mps'
+	MACOS = True
+	RUNLINE_AMP = "-amp"
+elif torch.cuda.is_available():
+	DEVICE = 'cuda'
+else:
+	DEVICE = 'cpu'
+
 # Pointnet++ Implementation
 ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
 # DATA_PATH absolute or relative to Pointnet++
@@ -10,7 +21,7 @@ SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/Pointnet_Pointnet2_pytorch')
 SEED_NETWORK = os.path.join(SOTA_ROOT, "models/pointnet2_cls_ssg.py")
 MODEL = "pointnet2_cls_ssg"
 TRAIN_FILE = os.path.join(SOTA_ROOT, 'train_classification.py')
-
+RUNLINE_TMP = ''
 '''
 # ExquisiteNetV2 Implementation
 ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
@@ -20,6 +31,7 @@ SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/ExquisiteNetV2')
 SEED_NETWORK = os.path.join(SOTA_ROOT, "network.py")
 MODEL = "network"
 TRAIN_FILE = os.path.join(SOTA_ROOT, "train.py")
+RUNLINE_TMP = f"-data {DATA_PATH} -end_lr 0.001 -seed 21 -val_r 0.2 {RUNLINE_AMP} -epoch 200"
 '''
 
 LOCAL = False
@@ -29,15 +41,6 @@ if LOCAL:
 else: 
 	RUN_COMMAND = 'sbatch'
 	DELAYED_CHECK = True
-
-MACOS = False
-if torch.mps.is_available():
-	DEVICE = 'mps'
-	MACOS = True
-elif torch.cuda.is_available():
-	DEVICE = 'cuda'
-else:
-	DEVICE = 'cpu'
 
 #LLM_MODEL = 'mixtral'
 #LLM_MODEL = 'llama3'
@@ -51,6 +54,7 @@ except:
 """
 Evolution Constants/Params
 """
+CUF_TIMEOUT = 10800
 FITNESS_WEIGHTS = (1.0, -1.0)
 INVALID_FITNESS_MAX = tuple([float(x*np.inf*-1) for x in FITNESS_WEIGHTS])
 # this is just a unique value
@@ -60,11 +64,11 @@ NUM_EOT_ELITES = 10
 GENERATION = 1
 PROB_QC = 0.0
 PROB_EOT = 0.25
-num_generations = 1  # Number of generations
-start_population_size = 32
+num_generations = 50  # Number of generations
+start_population_size = 64
 # start_population_size = 144   # Size of the population 124=72
 #population_size = 44 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
-population_size = 8 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
+population_size = 16 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
 crossover_probability = 0.35  # Probability of mating two individuals
 mutation_probability = 0.8 # Probability of mutating an individual
 num_elites = 44
