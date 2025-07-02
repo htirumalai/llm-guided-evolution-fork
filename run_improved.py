@@ -83,7 +83,7 @@ def generate_template(PROB_EOT, GEN_COUNT, TOP_N_GENES, SOTA_ROOT, SEED_NETWORK,
         print("\t‣ FixedPrompts")
         prompt_templates = glob.glob(f'{ROOT_DIR}/templates/FixedPrompts/*/*.txt')
         template_path = np.random.choice(prompt_templates)
-        mute_type = os.path.basename(template_path).split('.')[0]  # Assuming the file extension needs to be remove d
+        mute_type = os.path.basename(template_path).split('.')[0]  # Assuming the file extension needs to be removed
         with open(template_path, 'r') as file:
             template_txt = file.read()
         with open(f'{ROOT_DIR}/templates/ConstantRules.txt', 'r') as file:
@@ -301,15 +301,8 @@ def create_individual(container, temp_min=0.05, temp_max=0.4):
 
 
 def submit_run(gene_id):
-    def write_bash_script_py(gene_id, train_file=f'{TRAIN_FILE}'):
-        if not MACOS:
-            tmp = RUNLINE_TMP
-        else:
-            tmp = RUNLINE_TMP
-
-        # python_runline = f'python {train_file} -bs 216 -network "models.llmge_models.network_{gene_id}" {tmp}'
-        python_runline = (f'PYTHONPATH={SOTA_ROOT}/models/llmge_models:$PYTHONPATH 'f'python {train_file} --model "pointnet2_cls_ssg_{gene_id}" --log_dir "pointnet2_cls_ssg_{gene_id}" {tmp}')
-
+    def write_bash_script_py(gene_id):
+        python_runline = PYTHON_RUNLINE.format(GENE_ID=gene_id)
         bash_script_content = PYTHON_BASH_SCRIPT_TEMPLATE.format(python_runline)
         return bash_script_content
 
@@ -467,6 +460,7 @@ def check_and_update_fitness(population, timeout=18000, loop_delay=60*5):
                     fitness_tuple = GLOBAL_DATA[gene_id]['fitness']  # Implement this function
                     ind.fitness.values = fitness_tuple
                 elif time.time() - GLOBAL_DATA[gene_id]['start_time'] > timeout:
+                    #When the job times out, it also ends the evaluation once timeout has been exceeded
                     print(f"Timeout for gene ID {gene_id}, terminating job")
                     job_id = GLOBAL_DATA[gene_id].get("results_job", None)
                     if job_id and job_id != "None":
@@ -776,7 +770,7 @@ def load_checkpoint(folder_name="checkpoints", checkpoint_file=None):
 def true_nsga2(pop, k):
     pop = tools.selNSGA2(pop, len(pop)) # 10 diff
     k = k//4 * 4
-    if len(pop) < 10:
+    if len(pop) < 10: #Added to handle cases when there are less than 10 valid individuals
         pop = k * pop
     new_pop = tools.selTournamentDCD(pop, k) # mults of 4
     return new_pop

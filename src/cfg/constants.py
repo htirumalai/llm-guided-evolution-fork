@@ -21,17 +21,23 @@ SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/Pointnet_Pointnet2_pytorch')
 SEED_NETWORK = os.path.join(SOTA_ROOT, "models/pointnet2_cls_ssg.py")
 MODEL = "pointnet2_cls_ssg"
 TRAIN_FILE = os.path.join(SOTA_ROOT, 'train_classification.py')
-RUNLINE_TMP = ''
+PYTHON_RUNLINE = (
+    f'PYTHONPATH={SOTA_ROOT}/models/llmge_models:$PYTHONPATH '
+    f'python {TRAIN_FILE} --model "pointnet2_cls_ssg_{{GENE_ID}}" --log_dir "pointnet2_cls_ssg_{{GENE_ID}}"'
+)
 '''
 # ExquisiteNetV2 Implementation
 ROOT_DIR = "/home/hice1/htirumalai3/scratch/llm-guided-evolution-fork"
 # DATA_PATH absolute or relative to ExquisiteNetV2
 DATA_PATH = "./cifar10"
 SOTA_ROOT = os.path.join(ROOT_DIR, 'sota/ExquisiteNetV2')
-SEED_NETWORK = os.path.join(SOTA_ROOT, "network.py")
+SEED_NETWORK = os.path.join(SOTA_ROOT, "models/network.py")
 MODEL = "network"
 TRAIN_FILE = os.path.join(SOTA_ROOT, "train.py")
 RUNLINE_TMP = f"-data {DATA_PATH} -end_lr 0.001 -seed 21 -val_r 0.2 {RUNLINE_AMP} -epoch 200"
+PYTHON_RUNLINE = (
+    f'python {TRAIN_FILE} -bs 216 -network "models.llmge_models.network_{{GENE_ID}}" {RUNLINE_TMP}'
+)
 '''
 
 LOCAL = False
@@ -65,10 +71,10 @@ GENERATION = 1
 PROB_QC = 0.0
 PROB_EOT = 0.25
 num_generations = 50  # Number of generations
-start_population_size = 64
+start_population_size = 32
 # start_population_size = 144   # Size of the population 124=72
 #population_size = 44 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
-population_size = 16 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
+population_size = 8 # with cx_prob (0.25) and mute_prob (0.7) you get about %50 successful turnover
 crossover_probability = 0.35  # Probability of mating two individuals
 mutation_probability = 0.8 # Probability of mutating an individual
 num_elites = 44

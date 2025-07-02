@@ -1,11 +1,12 @@
 # --PROMPT LOG--
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from time import time
 import numpy as np
 
-#--OPTION--
+# --OPTION--
 
 # -- NOTE --
 # Current Implementation: Squared Euclidean distance for spatial neighborhood queries
@@ -36,7 +37,7 @@ def square_distance(src, dst):
     dist += torch.sum(dst ** 2, -1).view(B, 1, M)
     return dist
 
-#--OPTION--
+# --OPTION--
 
 # -- NOTE --
 # Current Implementation: Standard tensor indexing for point selection using batch indices
@@ -99,6 +100,7 @@ def farthest_point_sample(xyz, npoint):
 # -- NOTE --
 # The method square distance used in this architecture is pre-existing and fully implemented elsewhere.
 # It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# Keep method name the same as it is called elsewhere in the code
 # -- NOTE --
 
 def query_ball_point(radius, nsample, xyz, new_xyz):
@@ -128,6 +130,7 @@ def query_ball_point(radius, nsample, xyz, new_xyz):
 # -- NOTE --
 # Note: The methods farthest_point_sample, index_points, and query_ball_point used in this architecture are pre-existing and fully implemented elsewhere. 
 # It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# Keep method name the same as it is called elsewhere in the code
 # -- NOTE --
 
 def sample_and_group(npoint, radius, nsample, xyz, points, returnfps=False):
@@ -184,7 +187,8 @@ def sample_and_group_all(xyz, points):
 # --OPTION--
 # -- NOTE --
 # Note: The methods sample_and_group_all and sample_and_group used in this architecture are pre-existing and fully implemented elsewhere. 
-# It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# It is not necessary to create new implementations for this architecture. They should be used as-is.
+# Keep class name the same as it is called elsewhere in the code 
 # -- NOTE --
 
 class PointNetSetAbstraction(nn.Module):
@@ -234,6 +238,7 @@ class PointNetSetAbstraction(nn.Module):
 # -- NOTE --
 # Note: The class PointNetSetAbstraction used in this architecture is pre-existing and fully implemented elsewhere. 
 # It is not necessary to create new implementations for this architecture. They should be used as-is. 
+# Keep class name the same as it is called elsewhere in the code
 # -- NOTE --
 
 class GetModel(nn.Module):
